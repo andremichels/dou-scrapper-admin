@@ -24,6 +24,10 @@ export async function triggerSync(date: string, secao: string): Promise<{ run_id
   const res = await fetch(`${API_BASE}/api/v1/sync?date=${date}&secao=${secao}`, {
     method: "POST",
   });
+  if (res.status === 409) {
+    const body = await res.json();
+    throw new Error(body.detail || "Já existe um sync em execução");
+  }
   if (!res.ok) throw new Error("Failed to trigger sync");
   return res.json();
 }

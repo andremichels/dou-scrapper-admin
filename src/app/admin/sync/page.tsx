@@ -90,8 +90,8 @@ export default function ManualSyncPage() {
         secao,
         startedAt: new Date().toISOString(),
       });
-    } catch {
-      addLog("❌ Erro ao disparar sync");
+    } catch (err: any) {
+      addLog(`❌ ${err.message || "Erro ao disparar sync"}`);
       setLoading(false);
       setCompleted(true);
     }
