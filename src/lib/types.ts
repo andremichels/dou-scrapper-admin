@@ -15,6 +15,8 @@ export interface SyncRun {
   status: string;
   articles_synced: number;
   articles_skipped: number;
+  total_articles: number;
+  triggered_by: string;
   error_message: string | null;
   started_at: string;
   completed_at: string | null;
