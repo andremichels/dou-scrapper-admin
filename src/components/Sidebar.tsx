@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useActiveSync } from "@/lib/useActiveSync";
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: "◫" },
@@ -13,8 +14,11 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { active, status } = useActiveSync();
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
+
+  const isRunning = active && status && status.status === "running";
 
   return (
     <aside
@@ -44,7 +48,7 @@ export function Sidebar() {
           <Link
             key={item.href}
             href={item.href}
-            className="flex items-center gap-3 px-5 py-2 text-sm transition-colors"
+            className="flex items-center gap-3 px-5 py-2 text-sm transition-colors relative"
             style={{
               color: isActive(item.href)
                 ? "var(--color-accent)"
@@ -57,9 +61,30 @@ export function Sidebar() {
           >
             <span className="w-4 text-center">{item.icon}</span>
             {item.label}
+            {item.href === "/admin/sync" && isRunning && (
+              <span
+                className="ml-auto w-2 h-2 rounded-full animate-pulse"
+                style={{ background: "var(--color-accent)" }}
+                title={`Sync em execução: ${active?.dateStr} (${active?.secao}) — ${status?.articles_synced || 0} artigos`}
+              />
+            )}
           </Link>
         ))}
       </nav>
+
+      {isRunning && (
+        <div
+          className="px-5 py-2 border-t"
+          style={{ borderTop: "2px solid var(--color-divider)" }}
+        >
+          <p className="text-xs" style={{ color: "var(--color-neutral-500)" }}>
+            ⏳ {active?.dateStr} ({active?.secao})
+          </p>
+          <p className="text-xs" style={{ color: "var(--color-accent)", fontFamily: "var(--font-heading)", fontWeight: 800 }}>
+            {status?.articles_synced || 0} artigos
+          </p>
+        </div>
+      )}
     </aside>
   );
 }

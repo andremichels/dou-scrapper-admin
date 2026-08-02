@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { triggerSync, fetchSyncStatus } from "@/lib/api";
+import { useActiveSync } from "@/lib/useActiveSync";
 import { SyncRun } from "@/lib/types";
 
 export default function ManualSyncPage() {
@@ -13,6 +14,19 @@ export default function ManualSyncPage() {
   const [runId, setRunId] = useState<number | null>(null);
   const [completed, setCompleted] = useState(false);
   const logEndRef = useRef<HTMLDivElement>(null);
+
+  const { active, start } = useActiveSync();
+
+  // Resume from sessionStorage on mount
+  useEffect(() => {
+    if (active && !completed) {
+      setRunId(active.runId);
+      setLoading(true);
+      setCompleted(false);
+      addLog(`🔄 Reconectando ao sync em execução... (run #${active.runId})`);
+      addLog(`📋 ${active.dateStr} (${active.secao})`);
+    }
+  }, []);
 
   const addLog = (msg: string) => {
     const ts = new Date().toLocaleTimeString("pt-BR");
@@ -28,7 +42,14 @@ export default function ManualSyncPage() {
     const interval = setInterval(async () => {
       try {
         const status: SyncRun = await fetchSyncStatus(runId);
-        if (status.status === "completed") {
+        if (status.status === "running") {
+          // Only log at meaningful intervals to avoid spam
+          if (status.articles_synced > 0 || status.articles_skipped > 0) {
+            addLog(
+              `⏳ Em execução... ${status.articles_synced} syncados, ${status.articles_skipped} pulados`
+            );
+          }
+        } else if (status.status === "completed") {
           addLog(
             `✅ Sync concluído — ${status.articles_synced} artigos syncados, ${status.articles_skipped} pulados`
           );
@@ -40,10 +61,6 @@ export default function ManualSyncPage() {
           setCompleted(true);
           setLoading(false);
           clearInterval(interval);
-        } else {
-          addLog(
-            `⏳ Em execução... ${status.articles_synced} syncados, ${status.articles_skipped} pulados`
-          );
         }
       } catch {
         // ignore polling errors
@@ -67,6 +84,12 @@ export default function ManualSyncPage() {
       const result = await triggerSync(dateStr, secao);
       addLog(`📋 Sync disparado (run #${result.run_id}) — aguardando progresso...`);
       setRunId(result.run_id);
+      start({
+        runId: result.run_id,
+        dateStr,
+        secao,
+        startedAt: new Date().toISOString(),
+      });
     } catch {
       addLog("❌ Erro ao disparar sync");
       setLoading(false);
