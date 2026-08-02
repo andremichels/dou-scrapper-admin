@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Sidebar } from "@/components/Sidebar";
 import { fetchSyncs, triggerSync } from "@/lib/api";
 import { useActiveSync } from "@/lib/useActiveSync";
@@ -24,6 +25,7 @@ export default function SyncsPage() {
   const [loading, setLoading] = useState(true);
   const [resuming, setResuming] = useState<number | null>(null);
   const { active, start } = useActiveSync();
+  const router = useRouter();
 
   const load = () => {
     fetchSyncs(100, 0)
@@ -127,6 +129,24 @@ export default function SyncsPage() {
                       {new Date(row.started_at).toLocaleString("pt-BR")}
                     </td>
                     <td className="p-2">
+                      {row.status === "running" && (
+                        <button
+                          onClick={() => {
+                            start({ runId: row.id, dateStr: row.date_str, secao: row.secao, startedAt: row.started_at });
+                            router.push("/admin/sync");
+                          }}
+                          className="px-2 py-0.5 text-xs"
+                          style={{
+                            background: "#fff3cd",
+                            color: "#856404",
+                            fontFamily: "var(--font-heading)",
+                            fontWeight: 800,
+                            border: "1px solid #ffc107",
+                          }}
+                        >
+                          📋 Ver logs
+                        </button>
+                      )}
                       {(row.status === "failed" || row.status === "completed") && (
                         <button
                           onClick={() => handleResume(row)}
