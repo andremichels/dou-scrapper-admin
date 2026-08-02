@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { SyncMonitor } from "@/components/SyncMonitor";
 
 export default function AdminLayout({
   children,
@@ -88,5 +89,10 @@ export default function AdminLayout({
     );
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      {children}
+      <SyncMonitor />
+    </>
+  );
 }
