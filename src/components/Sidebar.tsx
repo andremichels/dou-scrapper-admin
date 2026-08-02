@@ -4,11 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navItems = [
-  { href: "/", label: "Dashboard", icon: "◫" },
-  { href: "/syncs", label: "Sync History", icon: "↻" },
-  { href: "/sync", label: "Manual Sync", icon: "▶" },
-  { href: "/coverage", label: "Coverage", icon: "▦" },
-  { href: "/articles", label: "Articles", icon: "☰" },
+  { href: "/admin", label: "Dashboard", icon: "◫" },
+  { href: "/admin/syncs", label: "Sync History", icon: "↻" },
+  { href: "/admin/sync", label: "Manual Sync", icon: "▶" },
+  { href: "/admin/coverage", label: "Coverage", icon: "▦" },
+  { href: "/admin/articles", label: "Articles", icon: "☰" },
 ];
 
 export function Sidebar() {
