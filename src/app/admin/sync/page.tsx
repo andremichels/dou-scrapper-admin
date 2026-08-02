@@ -7,7 +7,7 @@ import { SyncRun } from "@/lib/types";
 
 export default function ManualSyncPage() {
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
-  const [secao, setSecao] = useState("dou1");
+  const [secao, setSecao] = useState("dou3");
   const [loading, setLoading] = useState(false);
   const [logs, setLogs] = useState<string[]>([]);
   const [runId, setRunId] = useState<number | null>(null);
