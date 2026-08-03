@@ -88,7 +88,7 @@ export default function ArticlesPage() {
               </table>
             </div>
 
-            <div className="flex items-center justify-between mt-3 text-xs">
+            <div className="flex items-center justify-between mt-3 text-xs pb-16">
               <span style={{ color: "var(--color-neutral-500)" }}>{total.toLocaleString()} artigos</span>
               <div className="flex gap-1">
                 <button onClick={() => loadPage(page - 1)} disabled={page === 0}
