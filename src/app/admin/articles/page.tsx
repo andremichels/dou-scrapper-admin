@@ -79,7 +79,7 @@ export default function ArticlesPage() {
                       style={{ borderBottom: "1px solid var(--color-divider)" }}
                       onMouseEnter={e => e.currentTarget.style.background = "var(--color-surface)"}
                       onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
-                      <td className="p-2">{a.published_date}</td>
+                      <td className="p-2">{a.published_date ? new Date(a.published_date + "T00:00:00").toLocaleDateString("pt-BR") : "—"}</td>
                       <td className="p-2 max-w-md truncate">{a.title}</td>
                       <td className="p-2 max-w-xs truncate">{a.organ || "—"}</td>
                       <td className="p-2">{a.section || "—"}</td>
