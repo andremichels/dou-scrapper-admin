@@ -21,9 +21,7 @@ export async function fetchCoverage(days = 30): Promise<CoverageItem[]> {
 }
 
 export async function triggerSync(date: string, secao: string): Promise<{ run_id: number }> {
-  const res = await fetch(`${API_BASE}/api/v1/sync?date=${date}&secao=${secao}`, {
-    method: "POST",
-  });
+  const res = await fetch(`${API_BASE}/api/v1/sync?date=${date}&secao=${secao}`, { method: "POST" });
   if (res.status === 409) {
     const body = await res.json();
     throw new Error(body.detail || "Já existe um sync em execução");
@@ -36,4 +34,9 @@ export async function fetchSyncStatus(runId: number): Promise<SyncRun> {
   const res = await fetch(`${API_BASE}/api/v1/admin/sync-status/${runId}`);
   if (!res.ok) throw new Error("Failed to fetch sync status");
   return res.json();
+}
+
+export async function stopSync(runId: number): Promise<void> {
+  const res = await fetch(`${API_BASE}/api/v1/admin/sync-stop/${runId}`, { method: "POST" });
+  if (!res.ok) throw new Error("Failed to stop sync");
 }
