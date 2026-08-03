@@ -16,6 +16,7 @@ export default function ArticlesPage() {
   const [search, setSearch] = useState("");
 
   const loadPage = (p: number, q?: string) => {
+    setPage(p);
     setLoading(true);
     const from = p * PAGE_SIZE;
     const to = from + PAGE_SIZE - 1;
