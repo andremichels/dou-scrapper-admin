@@ -40,3 +40,44 @@ export async function stopSync(runId: number): Promise<void> {
   const res = await fetch(`${API_BASE}/api/v1/admin/sync-stop/${runId}`, { method: "POST" });
   if (!res.ok) throw new Error("Failed to stop sync");
 }
+
+// ── Cron jobs ──
+
+import type { CronJob } from "./types";
+
+export async function fetchCronJobs(): Promise<CronJob[]> {
+  const res = await fetch(`${API_BASE}/api/v1/admin/cron`);
+  if (!res.ok) throw new Error("Failed to fetch cron jobs");
+  return res.json();
+}
+
+export async function createCronJob(secao: string, schedule: string): Promise<CronJob> {
+  const res = await fetch(`${API_BASE}/api/v1/admin/cron`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ secao, schedule, enabled: true }),
+  });
+  if (!res.ok) throw new Error("Failed to create cron job");
+  return res.json();
+}
+
+export async function updateCronJob(id: number, data: { secao?: string; schedule?: string; enabled?: boolean }): Promise<CronJob> {
+  const res = await fetch(`${API_BASE}/api/v1/admin/cron/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error("Failed to update cron job");
+  return res.json();
+}
+
+export async function deleteCronJob(id: number): Promise<void> {
+  const res = await fetch(`${API_BASE}/api/v1/admin/cron/${id}`, { method: "DELETE" });
+  if (!res.ok) throw new Error("Failed to delete cron job");
+}
+
+export async function triggerCronNow(id: number): Promise<{ triggered: boolean; id: number; secao: string; date: string }> {
+  const res = await fetch(`${API_BASE}/api/v1/admin/cron/${id}/run`, { method: "POST" });
+  if (!res.ok) throw new Error("Failed to trigger cron job");
+  return res.json();
+}
