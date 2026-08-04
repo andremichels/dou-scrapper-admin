@@ -8,6 +8,7 @@ const navItems = [
   { href: "/admin", label: "Dashboard", icon: "◫" },
   { href: "/admin/syncs", label: "Sync History", icon: "↻" },
   { href: "/admin/sync", label: "Manual Sync", icon: "▶" },
+  { href: "/admin/cron", label: "Cron Jobs", icon: "⏱" },
   { href: "/admin/coverage", label: "Coverage", icon: "▦" },
   { href: "/admin/articles", label: "Articles", icon: "☰" },
 ];
