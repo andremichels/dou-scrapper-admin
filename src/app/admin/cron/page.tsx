@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { fetchCronJobs, createCronJob, updateCronJob, deleteCronJob, triggerCronNow } from "@/lib/api";
 import type { CronJob } from "@/lib/types";
+import { useToast } from "@/components/Toast";
 
 const SECOES = ["dou1", "dou2", "dou3"] as const;
 
@@ -27,6 +28,7 @@ export default function CronPage() {
   const [schedule, setSchedule] = useState("0 6 * * 1-5");
   const [creating, setCreating] = useState(false);
   const [running, setRunning] = useState<number | null>(null);
+  const { toast } = useToast();
 
   const load = () => {
     fetchCronJobs()
@@ -43,9 +45,10 @@ export default function CronPage() {
     try {
       await createCronJob(secao, schedule);
       setSchedule("0 6 * * 1-5");
+      toast("Cron job criado", "success");
       load();
     } catch (e: any) {
-      alert(e.message);
+      toast(e.message || "Erro ao criar", "error");
     }
     setCreating(false);
   };
@@ -58,6 +61,7 @@ export default function CronPage() {
   const handleDelete = async (job: CronJob) => {
     if (!confirm(`Remover cron job #${job.id} (${job.secao})?`)) return;
     await deleteCronJob(job.id);
+    toast(`Cron job #${job.id} removido`, "success");
     load();
   };
 
@@ -65,9 +69,9 @@ export default function CronPage() {
     setRunning(job.id);
     try {
       const result = await triggerCronNow(job.id);
-      alert(`Sync disparado: ${result.secao} para ${result.date}`);
+      toast(`Sync disparado: ${result.secao} para ${result.date}`, "success");
     } catch (e: any) {
-      alert(e.message);
+      toast(e.message || "Erro ao disparar", "error");
     }
     setRunning(null);
     load();

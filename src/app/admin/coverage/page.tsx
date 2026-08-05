@@ -5,14 +5,16 @@ import { Sidebar } from "@/components/Sidebar";
 import { fetchCoverage, triggerSync } from "@/lib/api";
 import { CoverageItem } from "@/lib/types";
 import { useActiveSync } from "@/lib/useActiveSync";
+import { useToast } from "@/components/Toast";
 
 const SECOES = ["dou1", "dou2", "dou3"] as const;
 
 export default function CoveragePage() {
   const [coverage, setCoverage] = useState<CoverageItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [syncing, setSyncing] = useState<string | null>(null); // "date:secao"
+  const [syncing, setSyncing] = useState<string | null>(null);
   const { start } = useActiveSync();
+  const { toast } = useToast();
 
   const load = () => {
     fetchCoverage(30)
@@ -34,9 +36,10 @@ export default function CoveragePage() {
         secao,
         startedAt: new Date().toISOString(),
       });
+      toast(`Sync ${secao} iniciado para ${date}`, "success");
       setTimeout(() => load(), 3000);
     } catch (e: any) {
-      alert(e.message || "Erro ao iniciar sync");
+      toast(e.message || "Erro ao iniciar sync", "error");
     }
     setSyncing(null);
   };
