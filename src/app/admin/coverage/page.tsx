@@ -56,11 +56,13 @@ export default function CoveragePage() {
         </h2>
 
         {loading ? (
-          <p className="text-sm" style={{ color: "var(--color-neutral-500)" }}>
-            Carregando...
-          </p>
+          <div className="space-y-2">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="h-7 skeleton" />
+            ))}
+          </div>
         ) : (
-          <div style={{ border: "2px solid var(--color-divider)" }}>
+          <div className="table-wrap">
             <table className="w-full text-xs">
               <thead>
                 <tr

@@ -143,7 +143,11 @@ export default function CronPage() {
 
         {/* Job list */}
         {loading ? (
-          <p className="text-sm" style={{ color: "var(--color-neutral-500)" }}>Carregando...</p>
+          <div className="space-y-2">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="h-8 skeleton" />
+            ))}
+          </div>
         ) : jobs.length === 0 ? (
           <div className="p-8 text-center" style={{ border: "2px solid var(--color-divider)", color: "var(--color-neutral-500)" }}>
             <p className="text-sm mb-2">Nenhum cron job configurado.</p>

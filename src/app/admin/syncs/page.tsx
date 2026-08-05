@@ -8,6 +8,7 @@ import { useActiveSync } from "@/lib/useActiveSync";
 import { SyncRun } from "@/lib/types";
 import { LogModal } from "@/components/LogModal";
 import { statusStyle } from "@/lib/colors";
+import { Button } from "@/components/Button";
 
 const PAGE_SIZE = 20;
 
@@ -110,9 +111,11 @@ export default function SyncsPage() {
         </div>
 
         {loading ? (
-          <p className="text-sm" style={{ color: "var(--color-neutral-500)" }}>
-            Carregando...
-          </p>
+          <div className="space-y-2">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="h-7 skeleton" />
+            ))}
+          </div>
         ) : (
           <div className="table-wrap">
             <table className="w-full text-xs">
@@ -167,52 +170,22 @@ export default function SyncsPage() {
                     <td className="p-2" style={{ color: "var(--color-neutral-500)" }}>
                       {new Date(row.started_at).toLocaleString("pt-BR")}
                     </td>
-                    <td className="p-2">
-                      <button
-                        onClick={() => setLogSyncId(row.id)}
-                        className="px-2 py-0.5 text-xs font-bold"
-                        style={{
-                          background: row.status === "running" ? "#fff3cd" : "var(--color-surface)",
-                          color: row.status === "running" ? "#856404" : "var(--color-text)",
-                          border: "1px solid " + (row.status === "running" ? "#ffc107" : "var(--color-divider)"),
-                        }}
-                      >
+                    <td className="p-2 flex gap-2 items-center">
+                      <Button variant="ghost" size="sm" onClick={() => setLogSyncId(row.id)}>
                         📋 Logs
-                      </button>
+                      </Button>
                       {row.status === "running" && (
-                        <span className="ml-2">
-                          <button
-                            onClick={() => {
-                              start({ runId: row.id, dateStr: row.date_str, secao: row.secao, startedAt: row.started_at });
-                              router.push("/admin/sync");
-                            }}
-                            className="px-2 py-0.5 text-xs"
-                            style={{
-                              background: "var(--color-accent)",
-                              color: "#fff",
-                              fontFamily: "var(--font-heading)",
-                              fontWeight: 800,
-                            }}
-                          >
-                            ▶ Monitor
-                          </button>
-                        </span>
+                        <Button variant="primary" size="sm" onClick={() => {
+                          start({ runId: row.id, dateStr: row.date_str, secao: row.secao, startedAt: row.started_at });
+                          router.push("/admin/sync");
+                        }}>
+                          ▶ Monitor
+                        </Button>
                       )}
                       {(row.status === "failed" || row.status === "completed") && (
-                        <button
-                          onClick={() => handleResume(row)}
-                          disabled={resuming === row.id}
-                          className="px-2 py-0.5 text-xs ml-2"
-                          style={{
-                            background: "var(--color-accent)",
-                            color: "#fff",
-                            fontFamily: "var(--font-heading)",
-                            fontWeight: 800,
-                            opacity: resuming === row.id ? 0.6 : 1,
-                          }}
-                        >
+                        <Button variant="primary" size="sm" disabled={resuming === row.id} onClick={() => handleResume(row)}>
                           {resuming === row.id ? "..." : "↻ Resume"}
-                        </button>
+                        </Button>
                       )}
                     </td>
                   </tr>
