@@ -89,25 +89,29 @@ export default function CoveragePage() {
                         <td key={s} className="text-center p-2">
                           {row[s] ? (
                             <span
-                              className="inline-block w-4 h-4"
+                              className="inline-flex items-center justify-center text-[10px] font-bold"
                               style={{
+                                width: 22, height: 22,
                                 background: "#d4edda",
                                 border: "1px solid #c3e6cb",
+                                color: "#155724",
                               }}
                               title={`${s} syncado`}
-                            />
+                            >✓</span>
                           ) : (
                             <button
                               onClick={() => handleSync(row.date, s)}
                               disabled={!!syncing}
-                              className="inline-block w-4 h-4 cursor-pointer"
+                              className="inline-flex items-center justify-center text-[10px] font-bold cursor-pointer"
                               style={{
+                                width: 22, height: 22,
                                 background: isSyncing ? "#fff3cd" : "#f8d7da",
                                 border: isSyncing ? "1px solid #ffc107" : "1px solid #f5c6cb",
+                                color: isSyncing ? "#856404" : "#721c24",
                                 opacity: syncing && !isSyncing ? 0.4 : 1,
                               }}
-                              title={`Sync ${s} para ${row.date}`}
-                            />
+                              title={`Sincronizar ${s} — ${row.date}`}
+                            >—</button>
                           )}
                         </td>
                       );
