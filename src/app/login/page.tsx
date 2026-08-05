@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
-import { useRouter } from "next/navigation";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -14,7 +13,6 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,8 +30,8 @@ export default function LoginPage() {
       return;
     }
 
-    router.push("/admin");
-    router.refresh();
+    // Hard navigation ensures cookies reach the middleware
+    window.location.href = "/admin";
   };
 
   return (
