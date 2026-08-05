@@ -6,6 +6,7 @@ import { Sidebar } from "@/components/Sidebar";
 import { fetchSyncs, triggerSync } from "@/lib/api";
 import { useActiveSync } from "@/lib/useActiveSync";
 import { SyncRun } from "@/lib/types";
+import { LogModal } from "@/components/LogModal";
 
 const PAGE_SIZE = 20;
 
@@ -28,6 +29,7 @@ export default function SyncsPage() {
   const [resuming, setResuming] = useState<number | null>(null);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+  const [logSyncId, setLogSyncId] = useState<number | null>(null);
   const { active, start } = useActiveSync();
   const router = useRouter();
 
@@ -170,29 +172,41 @@ export default function SyncsPage() {
                       {new Date(row.started_at).toLocaleString("pt-BR")}
                     </td>
                     <td className="p-2">
+                      <button
+                        onClick={() => setLogSyncId(row.id)}
+                        className="px-2 py-0.5 text-xs font-bold"
+                        style={{
+                          background: row.status === "running" ? "#fff3cd" : "var(--color-surface)",
+                          color: row.status === "running" ? "#856404" : "var(--color-text)",
+                          border: "1px solid " + (row.status === "running" ? "#ffc107" : "var(--color-divider)"),
+                        }}
+                      >
+                        📋 Logs
+                      </button>
                       {row.status === "running" && (
-                        <button
-                          onClick={() => {
-                            start({ runId: row.id, dateStr: row.date_str, secao: row.secao, startedAt: row.started_at });
-                            router.push("/admin/sync");
-                          }}
-                          className="px-2 py-0.5 text-xs"
-                          style={{
-                            background: "#fff3cd",
-                            color: "#856404",
-                            fontFamily: "var(--font-heading)",
-                            fontWeight: 800,
-                            border: "1px solid #ffc107",
-                          }}
-                        >
-                          📋 Ver logs
-                        </button>
+                        <span className="ml-2">
+                          <button
+                            onClick={() => {
+                              start({ runId: row.id, dateStr: row.date_str, secao: row.secao, startedAt: row.started_at });
+                              router.push("/admin/sync");
+                            }}
+                            className="px-2 py-0.5 text-xs"
+                            style={{
+                              background: "var(--color-accent)",
+                              color: "#fff",
+                              fontFamily: "var(--font-heading)",
+                              fontWeight: 800,
+                            }}
+                          >
+                            ▶ Monitor
+                          </button>
+                        </span>
                       )}
                       {(row.status === "failed" || row.status === "completed") && (
                         <button
                           onClick={() => handleResume(row)}
                           disabled={resuming === row.id}
-                          className="px-2 py-0.5 text-xs"
+                          className="px-2 py-0.5 text-xs ml-2"
                           style={{
                             background: "var(--color-accent)",
                             color: "#fff",
@@ -211,6 +225,7 @@ export default function SyncsPage() {
             </table>
           </div>
         )}
+        {logSyncId && <LogModal syncId={logSyncId} onClose={() => setLogSyncId(null)} />}
       </main>
     </div>
   );
