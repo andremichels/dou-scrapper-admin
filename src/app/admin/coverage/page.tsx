@@ -70,7 +70,6 @@ export default function CoveragePage() {
                   <th className="text-center p-2" style={{ fontFamily: "var(--font-heading)", fontWeight: 800 }}>dou1</th>
                   <th className="text-center p-2" style={{ fontFamily: "var(--font-heading)", fontWeight: 800 }}>dou2</th>
                   <th className="text-center p-2" style={{ fontFamily: "var(--font-heading)", fontWeight: 800 }}>dou3</th>
-                  <th className="text-center p-2" style={{ fontFamily: "var(--font-heading)", fontWeight: 800 }}></th>
                 </tr>
               </thead>
               <tbody>
@@ -110,31 +109,6 @@ export default function CoveragePage() {
                         </td>
                       );
                     })}
-                    <td className="text-center p-2">
-                      <button
-                        onClick={() => {
-                          SECOES.forEach((s) => {
-                            if (!row[s]) handleSync(row.date, s);
-                          });
-                        }}
-                        disabled={!!syncing || SECOES.every((s) => row[s])}
-                        className="px-2 py-0.5 text-xs font-bold"
-                        style={{
-                          background: SECOES.every((s) => row[s])
-                            ? "var(--color-divider)"
-                            : syncing
-                            ? "#fff3cd"
-                            : "var(--color-accent)",
-                          color: SECOES.every((s) => row[s])
-                            ? "var(--color-neutral-500)"
-                            : "#fff",
-                          border: "none",
-                          cursor: SECOES.every((s) => row[s]) ? "default" : "pointer",
-                        }}
-                      >
-                        Sync all
-                      </button>
-                    </td>
                   </tr>
                 ))}
               </tbody>
