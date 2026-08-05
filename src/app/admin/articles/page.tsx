@@ -118,7 +118,7 @@ export default function ArticlesPage() {
           </div>
         ) : (
           <>
-            <div style={{ border: "2px solid var(--color-divider)" }} className="flex-1 flex flex-col overflow-x-auto">
+            <div className="table-wrap flex-1 flex flex-col">
               <table className="w-full text-xs min-w-[600px]">
                 <thead>
                   <tr style={{ background: "var(--color-surface)", borderBottom: "2px solid var(--color-divider)" }}>

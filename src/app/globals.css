@@ -29,3 +29,25 @@ body {
 .divider {
   border: 2px solid var(--color-divider);
 }
+
+/* Skeleton loading animation */
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+.skeleton {
+  animation: pulse 1.5s ease-in-out infinite;
+  background: var(--color-divider);
+}
+
+/* Table container — overflow only on table, not whole page */
+.table-wrap {
+  overflow-x: auto;
+  border: 2px solid var(--color-divider);
+}
+
+/* Mobile sidebar overlay */
+@media (max-width: 767px) {
+  .md\\:hidden { display: none; }
+  .md\\:flex { display: none; }
+}

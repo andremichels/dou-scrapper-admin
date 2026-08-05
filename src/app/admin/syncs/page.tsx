@@ -7,6 +7,7 @@ import { fetchSyncs, triggerSync } from "@/lib/api";
 import { useActiveSync } from "@/lib/useActiveSync";
 import { SyncRun } from "@/lib/types";
 import { LogModal } from "@/components/LogModal";
+import { statusStyle } from "@/lib/colors";
 
 const PAGE_SIZE = 20;
 
@@ -113,7 +114,7 @@ export default function SyncsPage() {
             Carregando...
           </p>
         ) : (
-          <div style={{ border: "2px solid var(--color-divider)" }}>
+          <div className="table-wrap">
             <table className="w-full text-xs">
               <thead>
                 <tr
@@ -146,14 +147,9 @@ export default function SyncsPage() {
                       <span
                         className="px-2 py-0.5"
                         style={{
-                          background:
-                            row.status === "completed" ? "#d4edda" :
-                            row.status === "failed" ? "#f8d7da" :
-                            row.status === "running" ? "#fff3cd" : "#e2e3e5",
-                          color:
-                            row.status === "completed" ? "#155724" :
-                            row.status === "failed" ? "#721c24" :
-                            row.status === "running" ? "#856404" : "#383d41",
+                          background: statusStyle(row.status).bg,
+                          color: statusStyle(row.status).color,
+                          border: `1px solid ${statusStyle(row.status).border}`,
                           fontFamily: "var(--font-heading)",
                           fontWeight: 600,
                         }}
