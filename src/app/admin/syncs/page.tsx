@@ -7,6 +7,8 @@ import { fetchSyncs, triggerSync } from "@/lib/api";
 import { useActiveSync } from "@/lib/useActiveSync";
 import { SyncRun } from "@/lib/types";
 
+const PAGE_SIZE = 20;
+
 function fmtDuration(start: string, end: string | null): string {
   if (!end) return "—";
   const ms = new Date(end).getTime() - new Date(start).getTime();
@@ -24,18 +26,24 @@ export default function SyncsPage() {
   const [syncs, setSyncs] = useState<SyncRun[]>([]);
   const [loading, setLoading] = useState(true);
   const [resuming, setResuming] = useState<number | null>(null);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
   const { active, start } = useActiveSync();
   const router = useRouter();
 
   const load = () => {
-    fetchSyncs(100, 0)
-      .then(setSyncs)
+    setLoading(true);
+    fetchSyncs(PAGE_SIZE, page * PAGE_SIZE)
+      .then((data) => {
+        setSyncs(data);
+        setHasMore(data.length === PAGE_SIZE);
+      })
       .catch(console.error)
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => { load(); }, []);
-  useEffect(() => { load(); }, [active]); // refresh when active sync changes
+  useEffect(() => { load(); }, [page]);
+  useEffect(() => { load(); }, [active]);
 
   const handleResume = async (row: SyncRun) => {
     setResuming(row.id);
@@ -58,12 +66,45 @@ export default function SyncsPage() {
     <div className="flex min-h-screen" style={{ background: "var(--color-bg)" }}>
       <Sidebar />
       <main className="flex-1 p-6 overflow-x-auto">
-        <h2
-          className="text-xl mb-4"
-          style={{ fontFamily: "var(--font-heading)", fontWeight: 800 }}
-        >
-          Sync History
-        </h2>
+        <div className="flex items-baseline justify-between mb-4">
+          <h2
+            className="text-xl"
+            style={{ fontFamily: "var(--font-heading)", fontWeight: 800 }}
+          >
+            Sync History
+          </h2>
+          <div className="flex gap-2 items-center">
+            <button
+              onClick={() => setPage((p) => Math.max(0, p - 1))}
+              disabled={page === 0}
+              className="px-3 py-1 text-xs font-bold"
+              style={{
+                background: page === 0 ? "var(--color-divider)" : "var(--color-accent)",
+                color: page === 0 ? "var(--color-neutral-500)" : "#fff",
+                border: "none",
+                cursor: page === 0 ? "default" : "pointer",
+              }}
+            >
+              ← Anterior
+            </button>
+            <span className="text-xs" style={{ color: "var(--color-neutral-500)" }}>
+              Pág {page + 1}
+            </span>
+            <button
+              onClick={() => setPage((p) => p + 1)}
+              disabled={!hasMore}
+              className="px-3 py-1 text-xs font-bold"
+              style={{
+                background: !hasMore ? "var(--color-divider)" : "var(--color-accent)",
+                color: !hasMore ? "var(--color-neutral-500)" : "#fff",
+                border: "none",
+                cursor: !hasMore ? "default" : "pointer",
+              }}
+            >
+              Próximo →
+            </button>
+          </div>
+        </div>
 
         {loading ? (
           <p className="text-sm" style={{ color: "var(--color-neutral-500)" }}>
