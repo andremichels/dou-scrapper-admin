@@ -1,5 +1,7 @@
 "use client";
 
+import { primary, danger, ghost } from "@/lib/colors";
+
 interface ButtonProps {
   children: React.ReactNode;
   variant?: "primary" | "danger" | "ghost";
@@ -12,17 +14,9 @@ interface ButtonProps {
   title?: string;
 }
 
-const variantStyles: Record<string, { bg: string; color: string; border: string }> = {
-  primary: { bg: "var(--color-accent)", color: "#fff", border: "var(--color-accent)" },
-  danger: { bg: "var(--color-accent)", color: "#fff", border: "var(--color-accent)" }, // override below
-  ghost: { bg: "transparent", color: "var(--color-neutral-600)", border: "var(--color-divider)" },
-};
-
 export function Button({ children, variant = "primary", size = "md", type, disabled, onClick, className = "", style = {}, title }: ButtonProps) {
-  const v = variantStyles[variant];
-  const isDanger = variant === "danger";
+  const v = variant === "danger" ? danger : variant === "ghost" ? ghost : primary;
   const isSm = size === "sm";
-  const isGhost = variant === "ghost";
 
   return (
     <button
@@ -34,9 +28,9 @@ export function Button({ children, variant = "primary", size = "md", type, disab
       style={{
         padding: isSm ? "2px 8px" : "4px 12px",
         fontSize: isSm ? 11 : 13,
-        background: disabled ? "var(--color-divider)" : isDanger ? "#dc3545" : isGhost ? "transparent" : v.bg,
-        color: disabled ? "var(--color-neutral-500)" : isDanger ? "#fff" : isGhost ? "var(--color-neutral-600)" : v.color,
-        border: `1px solid ${disabled ? "var(--color-divider)" : isDanger ? "#dc3545" : isGhost ? "var(--color-divider)" : v.border}`,
+        background: disabled ? "var(--color-divider)" : v.bg,
+        color: disabled ? "var(--color-neutral-500)" : v.color,
+        border: `1px solid ${disabled ? "var(--color-divider)" : v.border}`,
         opacity: disabled ? 0.6 : 1,
         fontFamily: "var(--font-heading)",
         ...style,

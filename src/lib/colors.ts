@@ -9,8 +9,10 @@ export const status = {
   neutral: { bg: "#e2e3e5", color: "#383d41", border: "#ced4da" },
 } as const;
 
-// Action colors  
+// Action colors
+export const primary = { bg: "#201e1d", color: "#fff", border: "#201e1d" } as const;
 export const danger = { bg: "#dc3545", color: "#fff", border: "#dc3545" } as const;
+export const ghost  = { bg: "transparent", color: "var(--color-neutral-600)", border: "var(--color-divider)" } as const;
 
 // Terminal
 export const terminal = { bg: "#1a1a2e", color: "#00ff88" } as const;

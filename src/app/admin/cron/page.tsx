@@ -195,30 +195,12 @@ export default function CronPage() {
                       >
                         {job.enabled ? "Pausar" : "Ativar"}
                       </button>
-                      <button
-                        onClick={() => handleRunNow(job)}
-                        disabled={running === job.id}
-                        className="px-2 py-0.5 text-xs font-bold"
-                        style={{
-                          background: "var(--color-accent)",
-                          color: "#fff",
-                          border: "1px solid var(--color-accent)",
-                          opacity: running === job.id ? 0.6 : 1,
-                        }}
-                      >
+                      <Button variant="primary" size="sm" disabled={running === job.id} onClick={() => handleRunNow(job)}>
                         {running === job.id ? "..." : "▶ Run now"}
-                      </button>
-                      <button
-                        onClick={() => handleDelete(job)}
-                        className="px-2 py-0.5 text-xs"
-                        style={{
-                          background: "transparent",
-                          color: "var(--color-neutral-500)",
-                          border: "1px solid var(--color-divider)",
-                        }}
-                      >
+                      </Button>
+                      <Button variant="danger" size="sm" onClick={() => handleDelete(job)}>
                         ✕
-                      </button>
+                      </Button>
                     </td>
                   </tr>
                 ))}

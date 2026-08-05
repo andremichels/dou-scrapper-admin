@@ -17,6 +17,8 @@ const navItems = [
 
 function isActive(href: string, pathname: string): boolean {
   if (href === "/") return pathname === "/";
+  // /admin must match exactly — not /admin/syncs etc.
+  if (href === "/admin") return pathname === "/admin";
   return pathname === href || pathname.startsWith(href + "/");
 }
 
