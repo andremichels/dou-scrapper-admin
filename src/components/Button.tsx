@@ -4,6 +4,7 @@ interface ButtonProps {
   children: React.ReactNode;
   variant?: "primary" | "danger" | "ghost";
   size?: "sm" | "md";
+  type?: "button" | "submit";
   disabled?: boolean;
   onClick?: () => void;
   className?: string;
@@ -17,7 +18,7 @@ const variantStyles: Record<string, { bg: string; color: string; border: string 
   ghost: { bg: "transparent", color: "var(--color-neutral-600)", border: "var(--color-divider)" },
 };
 
-export function Button({ children, variant = "primary", size = "md", disabled, onClick, className = "", style = {}, title }: ButtonProps) {
+export function Button({ children, variant = "primary", size = "md", type, disabled, onClick, className = "", style = {}, title }: ButtonProps) {
   const v = variantStyles[variant];
   const isDanger = variant === "danger";
   const isSm = size === "sm";
@@ -28,6 +29,7 @@ export function Button({ children, variant = "primary", size = "md", disabled, o
       onClick={onClick}
       disabled={disabled}
       title={title}
+      type={type || "button"}
       className={`inline-flex items-center font-bold cursor-pointer ${className}`}
       style={{
         padding: isSm ? "2px 8px" : "4px 12px",

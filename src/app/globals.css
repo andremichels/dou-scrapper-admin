@@ -45,9 +45,3 @@ body {
   overflow-x: auto;
   border: 2px solid var(--color-divider);
 }
-
-/* Mobile sidebar overlay */
-@media (max-width: 767px) {
-  .md\\:hidden { display: none; }
-  .md\\:flex { display: none; }
-}
