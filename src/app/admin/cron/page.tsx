@@ -5,6 +5,7 @@ import { Sidebar } from "@/components/Sidebar";
 import { fetchCronJobs, createCronJob, updateCronJob, deleteCronJob, triggerCronNow } from "@/lib/api";
 import type { CronJob } from "@/lib/types";
 import { useToast } from "@/components/Toast";
+import { Button } from "@/components/Button";
 
 const SECOES = ["dou1", "dou2", "dou3"] as const;
 
