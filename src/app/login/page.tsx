@@ -1,12 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_KEY!
-);
+import { createBrowserClient } from "@supabase/ssr";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -19,6 +14,11 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
 
+    const supabase = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_KEY!
+    );
+
     const { error: authError } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -30,7 +30,6 @@ export default function LoginPage() {
       return;
     }
 
-    // Hard navigation ensures cookies reach the middleware
     window.location.href = "/admin";
   };
 
