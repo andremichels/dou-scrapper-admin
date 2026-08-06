@@ -59,6 +59,24 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         })}
       </nav>
 
+      <div className="px-5 py-3" style={{ borderTop: "2px solid var(--color-divider)" }}>
+        <button
+          onClick={async () => {
+            const { createBrowserClient } = await import("@supabase/ssr");
+            const sb = createBrowserClient(
+              process.env.NEXT_PUBLIC_SUPABASE_URL!,
+              process.env.NEXT_PUBLIC_SUPABASE_KEY!
+            );
+            await sb.auth.signOut();
+            window.location.href = "/login";
+          }}
+          className="text-xs font-bold w-full text-left"
+          style={{ color: "var(--color-neutral-500)" }}
+        >
+          Sair
+        </button>
+      </div>
+
       {isRunning && (
         <div className="px-5 py-2 border-t" style={{ borderTop: "2px solid var(--color-divider)" }}>
           <p className="text-xs" style={{ color: "var(--color-neutral-500)" }}>
