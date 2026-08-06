@@ -17,7 +17,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Protect /admin/*
+  // Protect /admin/* — only check auth, not admin_users table
   try {
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -36,15 +36,6 @@ export async function middleware(request: NextRequest) {
 
     if (!data.user) {
       return NextResponse.redirect(new URL("/login", request.url));
-    }
-
-    const { data: adminData, error: adminError } = await supabase
-      .from("admin_users")
-      .select("role")
-      .eq("user_id", data.user.id);
-
-    if (adminError || !adminData || adminData.length === 0) {
-      return NextResponse.redirect(new URL("/unauthorized", request.url));
     }
 
     return NextResponse.next();
