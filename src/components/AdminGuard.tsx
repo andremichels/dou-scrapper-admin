@@ -23,10 +23,10 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
 
       supabase
         .from("admin_users")
-        .select("role")
-        .eq("user_id", data.user.id)
+        .select("user_id,role")
         .then(({ data: adminData, error }) => {
-          if (error || !adminData || adminData.length === 0) {
+          const match = adminData?.find((r: any) => r.user_id === data.user.id);
+          if (error || !match) {
             router.push("/unauthorized");
           } else {
             setAuthorized(true);
