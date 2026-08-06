@@ -21,12 +21,12 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
         return;
       }
 
+      // Exact pattern that worked: select * (no filter), check data exists
       supabase
         .from("admin_users")
-        .select("user_id,role")
-        .then(({ data: adminData, error }) => {
-          const match = adminData?.find((r: any) => r.user_id === data.user.id);
-          if (error || !match) {
+        .select("*")
+        .then(({ data: rows, error }) => {
+          if (error || !rows || rows.length === 0) {
             router.push("/unauthorized");
           } else {
             setAuthorized(true);
