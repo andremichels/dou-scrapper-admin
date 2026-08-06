@@ -5,30 +5,28 @@ import type { NextRequest } from "next/server";
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Root → admin
   if (pathname === "/") {
     return NextResponse.redirect(new URL("/admin", request.url));
   }
 
-  // Public paths
   if (pathname.startsWith("/login") || pathname.startsWith("/unauthorized")) {
     return NextResponse.next();
   }
 
+  if (!pathname.startsWith("/admin")) {
+    return NextResponse.next();
+  }
+
   // Protect /admin/*
-  if (pathname.startsWith("/admin")) {
+  try {
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_KEY!,
       {
         cookies: {
-          getAll() {
-            return request.cookies.getAll();
-          },
+          getAll() { return request.cookies.getAll(); },
           setAll(cookiesToSet) {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              request.cookies.set(name, value)
-            );
+            cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
           },
         },
       }
@@ -37,26 +35,22 @@ export async function middleware(request: NextRequest) {
     const { data } = await supabase.auth.getUser();
 
     if (!data.user) {
-      // Redirect to login, preserving the original destination
-      const loginUrl = new URL("/login", request.url);
-      return NextResponse.redirect(loginUrl);
+      return NextResponse.redirect(new URL("/login", request.url));
     }
 
-    // Check admin_users
-    const { data: adminUser } = await supabase
+    const { data: adminData, error: adminError } = await supabase
       .from("admin_users")
       .select("role")
-      .eq("user_id", data.user.id)
-      .single();
+      .eq("user_id", data.user.id);
 
-    if (!adminUser) {
+    if (adminError || !adminData || adminData.length === 0) {
       return NextResponse.redirect(new URL("/unauthorized", request.url));
     }
 
     return NextResponse.next();
+  } catch {
+    return NextResponse.redirect(new URL("/login", request.url));
   }
-
-  return NextResponse.next();
 }
 
 export const config = {
